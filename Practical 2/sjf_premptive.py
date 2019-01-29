@@ -1,8 +1,10 @@
 import cpuscheduling as cs
 data = cs.readdata()
-data = cs.fcfscompletiontime(data)
+cs.sjfcompletiontime_premptive(data)
 cs.turnaroundtime(data)
 cs.waitingtime(data)
 cs.displaytable(data)
+
+
 
 
