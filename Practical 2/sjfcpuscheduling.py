@@ -4,5 +4,5 @@ data = cs.sjfcompletiontime(data)
 cs.turnaroundtime(data)
 cs.waitingtime(data)
 cs.displaytable(data)
-
+cs.showgraph(data,"SJF Scheduling")
 
