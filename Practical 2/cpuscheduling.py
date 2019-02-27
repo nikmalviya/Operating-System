@@ -37,8 +37,38 @@ def fcfscompletiontime(data):
         lastct = lastct + d['BT']
         d['CT'] = lastct
     return data
+def multilevelcompletiontime(data):
+    data = sorted(data, key=lambda x: x['AT'])
+    sys_queue = []
+    user_queue = []
 
-
+    pcounter = 0
+    completed = []
+    time = 0
+    totalp = len(data)
+    while pcounter != totalp:
+        for x in data.copy():
+            if x['AT'] <= time:
+                if x['PID'][-1] == 'S':
+                    sys_queue.append(x)
+                else:
+                    user_queue.append(x)
+                data.remove(x)
+        if len(sys_queue):
+            d = sys_queue.pop(0)
+            time = time + d['BT']
+            d['CT'] = time
+            completed.append(d)
+            pcounter += 1
+        elif len(user_queue):
+            d = user_queue.pop(0)
+            time = time+ d['BT']
+            d['CT'] = time
+            completed.append(d)
+            pcounter += 1
+        else:
+            time+=1
+    return completed
 def sjfcompletiontime(data):
     queue = []
     data = sorted(data, key=lambda x: (x['AT'], x['BT']))
@@ -74,7 +104,7 @@ def sjfcompletiontime_premptive(data):
             if x['AT'] <= time:
                 queue.append(x)
                 data.remove(x)
-        queue = sorted(queue, key=lambda x: x['BT'])
+        queue = sorted(queue, key=lambda x: x['RT'])
         if len(queue) != 0:
             d = queue.pop(0)
             d['RT'] = d['RT'] - 1
@@ -94,7 +124,7 @@ def roundrobincompletiontime(data,tq):
     data = sorted(data, key=lambda x: x['AT'])
     queue = []
     completed = []
-    time = 0
+    time = 0    
     n = len(data)
     temp = {}
     flag = False
@@ -129,7 +159,7 @@ def roundrobincompletiontime(data,tq):
     return completed
 def prioritycompletiontime(data):
     queue = []
-    data = sorted(data, key=lambda x: (x['PRIORITY'], x['AT'], x['PID']),reverse = True)
+    data = sorted(data, key=lambda x: (x['PRIORITY'], x['AT'], x['PID']))
     completed = []
     time = 0
     n = len(data)
@@ -139,7 +169,7 @@ def prioritycompletiontime(data):
             if x['AT'] <= time:
                 queue.append(x)
                 data.remove(x)
-        queue = sorted(queue, key=lambda x: (x['PRIORITY'], x['AT'], x['PID']),reverse = True)
+        queue = sorted(queue, key=lambda x: (x['PRIORITY'], x['AT'], x['PID']))
         if len(queue) != 0:
             d = queue.pop(0)
             time += d['BT']
@@ -149,6 +179,7 @@ def prioritycompletiontime(data):
         else:
             time = time + 1
     return sorted(completed,key= lambda x: x['PID'])
+
 def turnaroundtime(data):
     for d in data:
         d['TAT'] = d['CT'] - d['AT']
