@@ -15,12 +15,17 @@ def readData():
             rdata = line.replace('\n','').split()
             data.append(
                 dict(PID=rdata[0], AVAIL=np.array(eval(rdata[1])), MAX=np.array(eval(rdata[2])),DONE=False)
+
+
             )
+
+
 def calculate_resources_needed():
     avails = np.array([d['AVAIL'] for d in data])
     global current_available
     current_available = total_available - np.sum(avails,axis=0)
     for d in data: d['NEED'] = d['MAX'] - d['AVAIL']
+
 
 def process_order_for_safe_state():
     global current_available, safe_order
@@ -36,6 +41,8 @@ def process_order_for_safe_state():
         if not at_least_one_is_allocated:
             print('Resource Allocation not Safe..')
             exit(-1)
+
+
 def display():
     print('PID\t','  ALLOCATION\t',' MAX\t\t',' NEED')
     for d in data:
