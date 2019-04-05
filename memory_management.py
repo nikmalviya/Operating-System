@@ -31,7 +31,7 @@ memory = dict.fromkeys(partitions, None)
 process_sizes = eval(file.readline())
 print(process_sizes)
 for process in process_sizes:
-    if not best_fit(  memory, process):
+    if not first_fit(memory, process):
         print('Process with size : ', process, 'cannot be allocated in memory ')
     else:
         print('Process with size', process, ' is placed in memory')
